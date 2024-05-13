@@ -8,6 +8,13 @@ spring:
         base-url: http://localhost:11434
         chat:
           model: Eeve:latest
+      openai:
+        chat:
+          options:
+            model: gpt-3.5-turbo
+        base-url: https://api.openai.com/v1/chat/completions
+        api-key:
+
   #  data:
 #    mongodb:
 #      uri: mongodb://localhost:27017/test
