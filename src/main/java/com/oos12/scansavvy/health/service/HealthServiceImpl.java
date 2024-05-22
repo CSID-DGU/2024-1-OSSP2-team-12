@@ -142,4 +142,6 @@ public class HealthServiceImpl implements HealthService{
 
         return result;
     }
+
+    public Health saveHealth(Health health) { return healthRepository.save(health); }
 }
