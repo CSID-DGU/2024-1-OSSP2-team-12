@@ -33,6 +33,10 @@ public class HealthController {
     private ChatGPTController chatController;
     @Value("${naver.service.secretKey}")
     private String secretKey;
+    @GetMapping(value = "/allHealth")
+    public List<HealthDTO> getAllHealths(){
+        return ObjectMapperUtils.mapAll(healthService.findAll(), HealthDTO.class);
+    }
     @GetMapping("/naverOcr")
     public ResponseEntity<?> ocr() throws IOException{
         String fileName = "건강검진테스트.png";
@@ -117,17 +121,59 @@ public class HealthController {
     }
     @GetMapping("/generateOpinion")
     public ResponseEntity<?> generateOpinion(@RequestBody HealthDTO healthDTO) throws Exception {
-        String dotorOpinion = healthDTO.getOpinionsAndMeasures();
-        String promtmessage = "When you get the doctor's opinion for health, generate specific method in korean.\n" +
+        String dotorOpinion = healthDTO.getHealthCheckResult().getAttendingPhysician().getOpinionsAndMeasures();
+        String promtmessage = "When you get the doctor's opinion for health, generate specific actions step by step in korean.\n" +
                 "doctors's opinion: " + dotorOpinion + "\n" +
                 "Specific method:";
         String result = String.valueOf(chatController.generate(promtmessage));
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+    @GetMapping("/healthReport")
+    public ResponseEntity<?> healthReport() throws Exception {
+        // Step 1: Get JSON result from OCR
+        ResponseEntity<?> jsonResponse = OcrToJson();
+        log.info("OCR to JSON response: " + jsonResponse.getBody());
+
+        JSONObject jsonObject = (JSONObject) jsonResponse.getBody();
+
+        if (jsonObject == null) {
+            log.error("OCR to JSON conversion failed");
+            return new ResponseEntity<>("OCR to JSON conversion failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Step 2: Map the JSON object to HealthDTO
+        HealthDTO healthDTO = ObjectMapperUtils.map(jsonObject, HealthDTO.class);
+        log.info("Mapped HealthDTO: " + healthDTO);
+
+        // Step 3: Generate the doctor's opinion based on the healthDTO
+        ResponseEntity<?> opinionResponse = generateOpinion(healthDTO);
+        String generatedOpinion = (String) opinionResponse.getBody();
+        log.info("Generated doctor's opinion: " + generatedOpinion);
+
+        if (generatedOpinion == null) {
+            log.error("Doctor's opinion generation failed");
+            return new ResponseEntity<>("Doctor's opinion generation failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        healthDTO.getHealthCheckResult().getAttendingPhysician().setOpinionsAndMeasures(generatedOpinion);
+
+        // Step 5: Save the healthDTO
+        ResponseEntity<?> saveResponse = saveHealth(healthDTO);
+        log.info("Save response: " + saveResponse.getBody());
+
+        if (!saveResponse.getStatusCode().is2xxSuccessful()) {
+            log.error("Failed to save health report");
+            return new ResponseEntity<>("Failed to save health report", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Return a success response
+        log.info("Health report generated and saved successfully");
+        return new ResponseEntity<>("Health report generated and saved successfully", HttpStatus.OK);
+    }
     @PostMapping(value = "/jsonSave", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveHealth(@RequestBody HealthDTO healthDTO){
         String responseMessage = "Health Result saved success";
-        if (healthDTO.getResidentRegistrationNumber() == null){
+        if (healthDTO.getHealthCheckResult().getAttendingPhysician().getOpinionsAndMeasures() == null){
             responseMessage = "Registration Number null";
         }
         else healthService.saveHealth(ObjectMapperUtils.map(healthDTO, Health.class));

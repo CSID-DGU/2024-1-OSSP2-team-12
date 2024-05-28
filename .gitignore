@@ -20,7 +20,6 @@ src/main/resources/docker-compose.yml
 *.iws
 *.iml
 *.ipr
-*.yml
 
 ### NetBeans ###
 /nbproject/private/

@@ -2,7 +2,6 @@ package com.oos12.scansavvy.health.service;
 
 import com.oos12.scansavvy.health.model.Health;
 import com.oos12.scansavvy.health.repository.HealthRepository;
-import com.oos12.scansavvy.member.model.DatabaseSequence;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -30,6 +27,12 @@ public class HealthServiceImpl implements HealthService{
     private HealthRepository healthRepository;
     @Value("${naver.service.url}")
     private String url;
+
+    public Health saveHealth(Health health){
+        log.info("Saving health record " + health);
+        healthRepository.save(health);
+        return health;
+    }
 
     @Override
     public List<Health> findAll(){ return healthRepository.findAll();}
@@ -142,6 +145,4 @@ public class HealthServiceImpl implements HealthService{
 
         return result;
     }
-
-    public Health saveHealth(Health health) { return healthRepository.save(health); }
 }

@@ -9,7 +9,7 @@ spring:
           options:
             model: gpt-3.5-turbo
         base-url: https://api.openai.com/v1/completions
-        api-key: sk-proj-XlGxKEgh3FyHqSXuLWl7T3BlbkFJjP3p8gzCxQ3iU02lr3QM
+        api-key: sk-proj-UPsJKpn23FIE15XT41FUT3BlbkFJ2kQ66NsjJY7ipS3vL3bm
 
 
   #  data:

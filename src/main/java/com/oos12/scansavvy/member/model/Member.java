@@ -29,7 +29,7 @@ public class Member {
     @Size(min = 10)
     private String password;
     private String phone;
-    private String regDate;
+    private String residenceId;
 
 
     @Override
@@ -40,6 +40,7 @@ public class Member {
                 ", email='" + email +'\'' +
                 ", password=" + password +
                 ", phone=" + phone +
+                ", residenceId=" + residenceId +
                 '}';
     }
 }
