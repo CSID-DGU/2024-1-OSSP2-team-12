@@ -26,6 +26,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/health")
 public class HealthController {
     @Autowired
     private HealthServiceImpl healthService;
