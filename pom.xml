@@ -11,6 +11,7 @@
     <groupId>com.oos12</groupId>
     <artifactId>ScanSavvy</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>ScanSavvy</name>
     <description>ScanSavvy</description>
     <properties>
@@ -57,6 +58,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
