@@ -2,6 +2,7 @@ package com.oos12.scansavvy.health.service;
 
 import com.oos12.scansavvy.health.model.Health;
 import com.oos12.scansavvy.member.model.Member;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;

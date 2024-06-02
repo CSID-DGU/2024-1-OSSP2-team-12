@@ -1,5 +1,5 @@
 server:
-  address: localhost
+  address: 0.0.0.0
   port: 8080
 #JPA
 spring:
@@ -9,28 +9,39 @@ spring:
           options:
             model: gpt-3.5-turbo
         base-url: https://api.openai.com/v1/completions
-        api-key: sk-proj-UPsJKpn23FIE15XT41FUT3BlbkFJ2kQ66NsjJY7ipS3vL3bm
+        api-key: sk-proj-FFvqVhrZZbQcUUm1Xsa3T3BlbkFJ2k2kDKyfzIzjgkXIEt7f
 
-
-  #  data:
-#    mongodb:
-#      uri: mongodb://localhost:27017/test
-#      username: root
-#      password: 4788
     datasource:
       driver-class-name: com.mongodb.jdbc.MongoDriver
-      username: root
-      password: 4788
-      hikari:
-        jdbc-url: jdbc:mongodb://localhost:27017/test
+
+    data:
+      mongodb:
+        uri: mongodb+srv://root:2020112067@healthscanner.uftor3e.mongodb.net/test?retryWrites=true&w=majority&appName=HealthScanner
+
+
+#    datasource:
+#      driver-class-name: com.mongodb.jdbc.MongoDriver
+#      username: root
+#      password: 2020112067
+#      hikari:
+#        jdbc-url: jdbc:mongodb://localhost:27017/test
+
     main:
       allow-bean-definition-overriding: true
+
     thymeleaf:
       cache: false
       check-template-location: true
       prefix: classpath:/templates/
       suffix: .html
       mode: DEBUG
+
+
+    autoconfigure:
+      exclude:
+        - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+        - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
 
 naver:
   service:

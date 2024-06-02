@@ -23,8 +23,13 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class HealthServiceImpl implements HealthService{
+
+    private final HealthRepository healthRepository;
     @Autowired
-    private HealthRepository healthRepository;
+    public HealthServiceImpl(HealthRepository healthRepository){
+        this.healthRepository = healthRepository;
+    }
+
     @Value("${naver.service.url}")
     private String url;
 
