@@ -1,73 +1,72 @@
 package com.oos12.scansavvy.health.dto;
 
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
 @Data
-@Document(collection = "healthResult")
 public class HealthDTO {
-
-    private HealthCheckResult HealthCheckResult;
+    private String id;
+    private String name;
+    private String email;
+    private String residentRegistrationNumber;
+    private HealthCheckResult healthCheckResult;
 
     @Data
     public static class HealthCheckResult {
-        private String ExaminationDate;
-        private String BusinessName;
-        private String StoreName;
-        private TestItems TestItems;
-        private String MedicalInstitutionCode;
-        private String TestType;
-        private String ReferenceValues;
-        private String Name;
-        private String Result;
-        private String ResidentRegistrationNumber;
-        private String NotificationDate;
-        private String DepartmentName;
-        private String ExaminationAgencyName;
-        private AttendingPhysician AttendingPhysician;
-        private String JudgmentDate;
+        private String examinationDate;
+        private String businessName;
+        private String storeName;
+        private TestItems testItems;
+        private String medicalInstitutionCode;
+        private String testType;
+        private String referenceValues;
+        private String result;
+        private String notificationDate;
+        private String departmentName;
+        private String examinationAgencyName;
+        private AttendingPhysician attendingPhysician;
+        private String judgmentDate;
 
         @Data
         public static class TestItems {
-            private String BloodPressure;
-            private Urinalysis Urinalysis;
-            private String CervicalSmear_CervicalCancerTest;
-            private BloodTest BloodTest;
-            private String HepatitisTest;
-            private String BodyFat;
-            private String UrineTest;
-            private String Weight;
-            private String Hearing;
-            private String ChestXRay;
-            private String Vision;
-            private String Hemoglobin;
-            private String Height;
-            private String BloodSugar_Fasting;
-            private String Electrocardiogram_ECG;
+            private String bloodPressure;
+            private Urinalysis urinalysis;
+            private String cervicalSmearCervicalCancerTest;
+            private BloodTest bloodTest;
+            private String hepatitisTest;
+            private String bodyFat;
+            private String urineTest;
+            private String weight;
+            private String hearing;
+            private String chestXRay;
+            private String vision;
+            private String hemoglobin;
+            private String height;
+            private String bloodSugarFasting;
+            private String electrocardiogramECG;
 
             @Data
             public static class Urinalysis {
                 private String pH;
-                private String Proteinuria;
+                private String proteinuria;
             }
 
             @Data
             public static class BloodTest {
-                private String SerumGPT;
-                private String GammaGTP;
-                private String SerumGOT;
-                private String TotalCholesterol;
+                private String serumGPT;
+                private String gammaGTP;
+                private String serumGOT;
+                private String totalCholesterol;
             }
         }
 
         @Data
         public static class AttendingPhysician {
-            private String DoctorName;
-            private String OpinionsAndMeasures;
+            private String doctorName;
+            private String opinionsAndMeasures;
         }
     }
 }

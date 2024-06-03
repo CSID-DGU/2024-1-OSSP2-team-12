@@ -20,11 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Service
 @Slf4j
+@Service
 public class HealthServiceImpl implements HealthService{
 
-    private final HealthRepository healthRepository;
+    @Autowired
+    private HealthRepository healthRepository;
     @Autowired
     public HealthServiceImpl(HealthRepository healthRepository){
         this.healthRepository = healthRepository;
@@ -42,9 +43,11 @@ public class HealthServiceImpl implements HealthService{
     @Override
     public List<Health> findAll(){ return healthRepository.findAll();}
 
-    public Health findByResidentRegistrationNumber(String ResidentRegistrationNumber){
-        return healthRepository.findByResidentRegistrationNumber(ResidentRegistrationNumber);
+    @Override
+    public Health findByEmail(String email){
+        return healthRepository.findByEmail(email);
     }
+
     public List<String> callApi(String type, String filePath, String naver_secretKey,
                                 String ext) {
         String apiURL = url;

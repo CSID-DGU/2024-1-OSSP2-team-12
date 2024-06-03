@@ -37,19 +37,21 @@ public class HealthController {
     private ChatGPTController chatController;
     @Value("${naver.service.secretKey}")
     private String secretKey;
+    private static final String UPLOAD_DIR = "/temp";
     @GetMapping(value = "/allHealth")
     public List<HealthDTO> getAllHealths(){
         return ObjectMapperUtils.mapAll(healthService.findAll(), HealthDTO.class);
     }
-    @GetMapping(value = "/byResidentRegistrationNumber/{ResidentRegistrationNumber}")
-    public HealthDTO getByRRN(@PathVariable("ResidentRegistrationNumber") String ResidentRegistrationNumber){
-        return ObjectMapperUtils.map(healthService.findByResidentRegistrationNumber(ResidentRegistrationNumber), HealthDTO.class);
+    @GetMapping(value = "/byEmail/{email}")
+    public HealthDTO getByEmail(@PathVariable("email") String email){
+        return ObjectMapperUtils.map(healthService.findByEmail(email), HealthDTO.class);
     }
+
     @GetMapping("/naverOcr")
-    public ResponseEntity<?> ocr(@RequestParam("filePath") String filePath) throws IOException{
+    public ResponseEntity<?> ocr(String path) throws IOException{
         String fileName = "건강검진테스트.png";
-        File file = ResourceUtils.getFile("classpath:static/image/" + fileName);
-        File file1 = new File(filePath);
+        //File file = ResourceUtils.getFile("classpath:static/image/" + fileName);
+        File file = ResourceUtils.getFile(path);
         List<String> result = healthService.callApi("POST", file.getPath(), secretKey, "png");
         if (result != null){
             for (String s : result){
@@ -61,8 +63,8 @@ public class HealthController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @GetMapping("/OcrToJson")
-    public ResponseEntity<?> OcrToJson(@RequestParam("filePath") String filePath) throws IOException, ParseException {
-        String OcrText = String.valueOf(ocr(filePath));
+    public ResponseEntity<?> OcrToJson(String path) throws IOException, ParseException {
+        String OcrText = String.valueOf(ocr(path));
         String promptMessage = "When you get the medical certificate in context, Convert it into a json file in korean. The keys are fixed. Certainly print it out according to the json format\n" +
                 "if cannot find right value for the key, put value null instead\n" +
                 "### Example\n" +
@@ -136,9 +138,9 @@ public class HealthController {
         String result = String.valueOf(chatController.generate(promtmessage));
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    @GetMapping("/healthReport")
-    public ResponseEntity<?> healthReport(@RequestParam("filePath") String filePath) throws Exception {
-        ResponseEntity<?> jsonResponse = OcrToJson(filePath);
+    @GetMapping("/healthReport/{email}")
+    public ResponseEntity<?> healthReport(@PathVariable("email") String email, String path) throws Exception {
+        ResponseEntity<?> jsonResponse = OcrToJson(path);
         log.info("OCR to JSON response: " + jsonResponse.getBody());
 
         JSONObject jsonObject = (JSONObject) jsonResponse.getBody();
@@ -161,7 +163,7 @@ public class HealthController {
         }
 
         healthDTO.getHealthCheckResult().getAttendingPhysician().setOpinionsAndMeasures(generatedOpinion);
-
+        healthDTO.setEmail(email);
         ResponseEntity<?> saveResponse = saveHealth(healthDTO);
         log.info("Save response: " + saveResponse.getBody());
 
@@ -187,16 +189,18 @@ public class HealthController {
     public String uploadForm() throws Exception{
         return "/upload-form";
     }
-    @PostMapping("/uploadAndOcr")
-    public ResponseEntity<?> uploadAndOcr(@RequestParam("file") MultipartFile file) throws IOException, ParseException {
+    @PostMapping("/uploadAndOcr/{email}")
+    public ResponseEntity<?> uploadAndOcr(@RequestParam("file") MultipartFile file,@PathVariable("email") String email) throws IOException, ParseException {
         if (file.isEmpty()) {
             return new ResponseEntity<>("No file uploaded", HttpStatus.BAD_REQUEST);
         }
-
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
         // 저장 경로 설정
-        String uploadDir = "src/main/resources/static/image/";
         String fileName = file.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir + fileName);
+        Path filePath = Paths.get(UPLOAD_DIR, fileName);
 
 
         // 파일 저장
@@ -206,11 +210,11 @@ public class HealthController {
         } catch (IOException e) {
             log.error("Failed to save uploaded file", e);
             return new ResponseEntity<>("Failed to save uploaded file", HttpStatus.INTERNAL_SERVER_ERROR);
-        };
+        }
 
         try {
             // OCR 처리 및 건강 보고서 생성
-            ResponseEntity<?> healthReportResponse = healthReport(filePath.toString());
+            ResponseEntity<?> healthReportResponse = healthReport(email, filePath.toString());
 
             if (!healthReportResponse.getStatusCode().is2xxSuccessful()) {
                 return new ResponseEntity<>("Failed to generate health report", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -220,8 +224,7 @@ public class HealthController {
         } catch (Exception e) {
             log.error("Error generating health report", e);
             return new ResponseEntity<>("Error generating health report", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        finally {
+        } finally {
             // 파일 삭제
             try {
                 Files.delete(filePath);
@@ -231,5 +234,4 @@ public class HealthController {
             }
         }
     }
-
 }
