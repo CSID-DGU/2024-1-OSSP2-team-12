@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface HealthService {
     List<Health> findAll();
+    Health findByResidentRegistrationNumber(String ResidentRegistrationNumber);
     List<String> callApi(String type, String filePath, String naver_secretKey,
                                 String ext);
 

@@ -11,12 +11,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
+@Data
 @Document(collection = "healthResult")
 public class Health {
+    @Id
+    private String id;
     @NotBlank
     private String Name;
-    @Id
+
     @NotBlank
+    private String ResidentRegistrationNumber;
+
     private HealthDTO.HealthCheckResult HealthCheckResult;
 
     @Data

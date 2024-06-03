@@ -41,6 +41,10 @@ public class HealthServiceImpl implements HealthService{
 
     @Override
     public List<Health> findAll(){ return healthRepository.findAll();}
+
+    public Health findByResidentRegistrationNumber(String ResidentRegistrationNumber){
+        return healthRepository.findByResidentRegistrationNumber(ResidentRegistrationNumber);
+    }
     public List<String> callApi(String type, String filePath, String naver_secretKey,
                                 String ext) {
         String apiURL = url;

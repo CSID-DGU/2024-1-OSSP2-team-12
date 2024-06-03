@@ -21,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -38,11 +41,15 @@ public class HealthController {
     public List<HealthDTO> getAllHealths(){
         return ObjectMapperUtils.mapAll(healthService.findAll(), HealthDTO.class);
     }
+    @GetMapping(value = "/byResidentRegistrationNumber/{ResidentRegistrationNumber}")
+    public HealthDTO getByRRN(@PathVariable("ResidentRegistrationNumber") String ResidentRegistrationNumber){
+        return ObjectMapperUtils.map(healthService.findByResidentRegistrationNumber(ResidentRegistrationNumber), HealthDTO.class);
+    }
     @GetMapping("/naverOcr")
-    public ResponseEntity<?> ocr() throws IOException{
+    public ResponseEntity<?> ocr(@RequestParam("filePath") String filePath) throws IOException{
         String fileName = "건강검진테스트.png";
         File file = ResourceUtils.getFile("classpath:static/image/" + fileName);
-
+        File file1 = new File(filePath);
         List<String> result = healthService.callApi("POST", file.getPath(), secretKey, "png");
         if (result != null){
             for (String s : result){
@@ -54,8 +61,8 @@ public class HealthController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @GetMapping("/OcrToJson")
-    public ResponseEntity<?> OcrToJson() throws IOException, ParseException {
-        String OcrText = String.valueOf(ocr());
+    public ResponseEntity<?> OcrToJson(@RequestParam("filePath") String filePath) throws IOException, ParseException {
+        String OcrText = String.valueOf(ocr(filePath));
         String promptMessage = "When you get the medical certificate in context, Convert it into a json file in korean. The keys are fixed. Certainly print it out according to the json format\n" +
                 "if cannot find right value for the key, put value null instead\n" +
                 "### Example\n" +
@@ -130,9 +137,8 @@ public class HealthController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @GetMapping("/healthReport")
-    public ResponseEntity<?> healthReport() throws Exception {
-        // Step 1: Get JSON result from OCR
-        ResponseEntity<?> jsonResponse = OcrToJson();
+    public ResponseEntity<?> healthReport(@RequestParam("filePath") String filePath) throws Exception {
+        ResponseEntity<?> jsonResponse = OcrToJson(filePath);
         log.info("OCR to JSON response: " + jsonResponse.getBody());
 
         JSONObject jsonObject = (JSONObject) jsonResponse.getBody();
@@ -142,11 +148,9 @@ public class HealthController {
             return new ResponseEntity<>("OCR to JSON conversion failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // Step 2: Map the JSON object to HealthDTO
         HealthDTO healthDTO = ObjectMapperUtils.map(jsonObject, HealthDTO.class);
         log.info("Mapped HealthDTO: " + healthDTO);
 
-        // Step 3: Generate the doctor's opinion based on the healthDTO
         ResponseEntity<?> opinionResponse = generateOpinion(healthDTO);
         String generatedOpinion = (String) opinionResponse.getBody();
         log.info("Generated doctor's opinion: " + generatedOpinion);
@@ -158,7 +162,6 @@ public class HealthController {
 
         healthDTO.getHealthCheckResult().getAttendingPhysician().setOpinionsAndMeasures(generatedOpinion);
 
-        // Step 5: Save the healthDTO
         ResponseEntity<?> saveResponse = saveHealth(healthDTO);
         log.info("Save response: " + saveResponse.getBody());
 
@@ -167,7 +170,6 @@ public class HealthController {
             return new ResponseEntity<>("Failed to save health report", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // Return a success response
         log.info("Health report generated and saved successfully");
         return new ResponseEntity<>("Health report generated and saved successfully", HttpStatus.OK);
     }
@@ -186,17 +188,48 @@ public class HealthController {
         return "/upload-form";
     }
     @PostMapping("/uploadAndOcr")
-    public String uploadAndOcr(@RequestParam("file") MultipartFile file, Model model) throws IOException {
+    public ResponseEntity<?> uploadAndOcr(@RequestParam("file") MultipartFile file) throws IOException, ParseException {
         if (file.isEmpty()) {
-            return "error";
+            return new ResponseEntity<>("No file uploaded", HttpStatus.BAD_REQUEST);
         }
 
-        String naverSecretKey = secretKey;
-        File tempFile = File.createTempFile("temp", file.getOriginalFilename());
-        file.transferTo(tempFile);
-        List<String> result = healthService.callApi("POST", tempFile.getPath(), naverSecretKey, "png");
-        tempFile.delete();
-        model.addAttribute("ocrResult", result);
-        return "ocr-result";
+        // 저장 경로 설정
+        String uploadDir = "src/main/resources/static/image/";
+        String fileName = file.getOriginalFilename();
+        Path filePath = Paths.get(uploadDir + fileName);
+
+
+        // 파일 저장
+        try {
+            Files.createDirectories(filePath.getParent());
+            file.transferTo(filePath.toFile());
+        } catch (IOException e) {
+            log.error("Failed to save uploaded file", e);
+            return new ResponseEntity<>("Failed to save uploaded file", HttpStatus.INTERNAL_SERVER_ERROR);
+        };
+
+        try {
+            // OCR 처리 및 건강 보고서 생성
+            ResponseEntity<?> healthReportResponse = healthReport(filePath.toString());
+
+            if (!healthReportResponse.getStatusCode().is2xxSuccessful()) {
+                return new ResponseEntity<>("Failed to generate health report", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            return healthReportResponse;
+        } catch (Exception e) {
+            log.error("Error generating health report", e);
+            return new ResponseEntity<>("Error generating health report", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        finally {
+            // 파일 삭제
+            try {
+                Files.delete(filePath);
+                log.info("Temporary file deleted: " + filePath);
+            } catch (IOException e) {
+                log.error("Failed to delete temporary file: " + filePath, e);
+            }
+        }
     }
+
 }
