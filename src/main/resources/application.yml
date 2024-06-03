@@ -9,7 +9,7 @@ spring:
           options:
             model: gpt-3.5-turbo
         base-url: https://api.openai.com/v1/completions
-        api-key: sk-proj-FFvqVhrZZbQcUUm1Xsa3T3BlbkFJ2k2kDKyfzIzjgkXIEt7f
+        api-key: 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
 
     datasource:
       driver-class-name: com.mongodb.jdbc.MongoDriver
@@ -32,7 +32,7 @@ spring:
     thymeleaf:
       cache: false
       check-template-location: true
-      prefix: classpath:/templates/
+#      prefix: classpath:/templates/
       suffix: .html
       mode: DEBUG
 
