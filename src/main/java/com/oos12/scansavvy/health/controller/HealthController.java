@@ -37,7 +37,7 @@ public class HealthController {
     private ChatGPTController chatController;
     @Value("${naver.service.secretKey}")
     private String secretKey;
-    private static final String UPLOAD_DIR = "/temp";
+    private static final String UPLOAD_DIR = "/home/tomas040788/temp";
     @GetMapping(value = "/allHealth")
     public List<HealthDTO> getAllHealths(){
         return ObjectMapperUtils.mapAll(healthService.findAll(), HealthDTO.class);
@@ -50,7 +50,7 @@ public class HealthController {
     @GetMapping("/naverOcr")
     public ResponseEntity<?> ocr(String path) throws IOException{
         String fileName = "건강검진테스트.png";
-        //File file = ResourceUtils.getFile("classpath:static/image/" + fileName);
+        //File file = ResourceUtils.getFile("/home/tomas040788/temp/" + fileName);
         File file = ResourceUtils.getFile(path);
         List<String> result = healthService.callApi("POST", file.getPath(), secretKey, "png");
         if (result != null){
@@ -188,6 +188,30 @@ public class HealthController {
     @GetMapping("/upload-form")
     public String uploadForm() throws Exception{
         return "/upload-form";
+    }
+    @PostMapping("/upload")
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return new ResponseEntity<>("No file uploaded", HttpStatus.BAD_REQUEST);
+        }
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+        // 저장 경로 설정
+        String fileName = file.getOriginalFilename();
+        Path filePath = Paths.get(UPLOAD_DIR, fileName);
+
+
+        // 파일 저장
+        try {
+            Files.createDirectories(filePath.getParent());
+            file.transferTo(filePath.toFile());
+            return new ResponseEntity<>("uploaded file", HttpStatus.OK);
+        } catch (IOException e) {
+            log.error("Failed to save uploaded file", e);
+            return new ResponseEntity<>("Failed to save uploaded file", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     @PostMapping("/uploadAndOcr/{email}")
     public ResponseEntity<?> uploadAndOcr(@RequestParam("file") MultipartFile file,@PathVariable("email") String email) throws IOException, ParseException {

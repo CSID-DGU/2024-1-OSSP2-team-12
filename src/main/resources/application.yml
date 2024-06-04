@@ -3,13 +3,19 @@ server:
   port: 8080
 #JPA
 spring:
+    cloud:
+      gcp:
+        storage:
+          credentials:
+            location: classpath:healthscanner-dguid-1edac986ccea.json
+          project-id: healthscanner-dguid
     ai:
       openai:
         chat:
           options:
             model: gpt-3.5-turbo
         base-url: https://api.openai.com/v1/completions
-        api-key: sk-proj-0Kk8iXysVFf9R5iXocZhT3BlbkFJEt0jNtQCwZ6QbwOZy22X
+        api-key: sk-proj-zL3c1bQkvhkkkM71yedyT3BlbkFJlmkDqG7EusBrxgmfaeAg
 
     datasource:
       driver-class-name: com.mongodb.jdbc.MongoDriver

@@ -1,5 +1,4 @@
 FROM eclipse-temurin:17-jdk
-VOLUME /tmp
+VOLUME /home/tomas040788/temp
 COPY target/*.jar app.jar
-RUN mkdir -p temp
 ENTRYPOINT ["java", "-jar", "/app.jar"]

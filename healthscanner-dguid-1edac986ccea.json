@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "healthscanner-dguid",
+  "private_key_id": "1edac986cceaff3b70e1f7f2b8a8c2d41e0f46ed",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCmvRO/zZwHCJV8\nQn+p8LSt7ixJkJ3SvGJ+jGQesVuIm67h5yriOvCHOozkr/mx05bhKfM3jYk7/Sih\n0eDLYLReeADY5a862TFxADFepLo57f+OHansNYpZffZP/w1c1KWGCHNcq/qEHHgZ\nWtHFadjpCsw4lWSBNGvHOvsXiLrgTmgE2XaEOnpucrEKJNG1gc0CwOmZHMTHTjOu\n4ItnvGj6oT5hxTWYwbOqNnAMFxEyy7QzewpbXpfhV5DCVemdu5+01WbQKBgN2IjQ\n4VwPfhU6BWCwoBtMgreOy0m7K9VlOpyfd+LZ6Qt5rfNdgRbmYnnFOqczwanl5WSC\n1Fbm0H9lAgMBAAECggEACCoP8n9V2X5RG4GCEMcpga682mlLYQs6Y2nqaRpUGg9N\nc+BG2Eb8ihKS3YvEVTHAHIxaTWkPxDE0MSA+upaknk+P8w7kEqSZ6CeTQ0gbmkSO\nE95d+KPyf0lMq0QY2mfLJxH43BvLq3ZdZxhsVxdEuLx/nXGrNyxi7qFztAZM6Di6\nSFQvGk0NvTB50nSnX2VhD02cqNRN3tNLYIus+ufM9eiMAeB2jauSeLVN5tkK2n8t\nBvQ2xou+Qg7x/jsHZn20cvRmD23SPxmWeM9H9Usb6BfoZfi7GlcMSAzWrRKo9WMu\nqfXX2oZEiUgCxttxkOB+3vSLvgueZvXIP/JVhZNFoQKBgQDkBZvy34mh6LIhW18P\nWi8jQ53Fwf30OeAvTFT0/fL3RNOhXO3mDXno1Z7QPrRf8OKcyMxYPjjfP1Nwjfye\nBjTxIbtntqba7g+V69Rk6bQ53UL5A21tb32gJYNQUQwmGlD89XnEbaVn/G0SPY0P\ngnRWZT/GtT8qcs7p6Zkk3xmwDQKBgQC7Mn+xji59PWDozCv3KgqW3Xpq4pxny/Xw\nS1OLCeoA2dI/P62NwifzVYcP3/pKOV9G8+CTvQ5c07M6rQwugxhbZVKOY/HoaKIh\n2dJtume3huVOt2Yg5OfYD8NotWe4OUVcj7S9d1fllFg/v85XTMpWy1MiBcfJg9Nz\nXFDbZqneuQKBgG98mpouV5HVPzr1/M15z7BTQBHP3sYJgiY+EQ/UFnZ1rW+pCxw/\nHIsN3198OR7rnTEBMIA4s//ba4WNtqTg7gOz9XgpIv3KBc7MhoVsitT77OHpnhgy\nud6SWNjtN55toYl80DONVKE6F24isBSUOSOAz6TtO1wa1DYkI9+WQW4FAoGAVlJy\nGeFzxKLiJlfISmCjo3AcPF+lOiQOlDFYI/x9YMkRL8Ngd8c5fvdIoeRp2YJdUi2x\nuM7saZfhxUP5IxWmzLaLfEfQTJi7cxqr85eKrlHROhxORwrncnXKaWWFn6khOA64\njMoUyTRAAZ2kPBOYFrAJ9N1vhJh6kG7YhmPwH1kCgYAwI+sUCWjnLp0Gp8oFHGSA\nnAT43/uMNRfgGrTkRP5Yl9VMT4xw2aK7k5shJreVeIGKMfEp40Dhdyss6reBAy9N\nCT6yNiZRHczHEPbTAh1rDG8iBeRrvSb8okvtmlR7JiFdWPGW1vYkzv9nuBdIZ//8\n/eHzKOPC/S3IdcrA84YkHA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "springboot-storage-access@healthscanner-dguid.iam.gserviceaccount.com",
+  "client_id": "111269009272230030972",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/springboot-storage-access%40healthscanner-dguid.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
