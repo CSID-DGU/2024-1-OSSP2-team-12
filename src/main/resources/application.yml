@@ -15,7 +15,7 @@ spring:
           options:
             model: gpt-3.5-turbo
         base-url: https://api.openai.com/v1/completions
-        api-key: sk-proj-zL3c1bQkvhkkkM71yedyT3BlbkFJlmkDqG7EusBrxgmfaeAg
+        api-key: sk-proj-SRSLzEkC9tTGHonJX1rjT3BlbkFJwtc2ovmZSVE42HLpgQWh
 
     datasource:
       driver-class-name: com.mongodb.jdbc.MongoDriver
