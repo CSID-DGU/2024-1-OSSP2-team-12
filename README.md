@@ -28,6 +28,7 @@
 ![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)
 
 ## 📌 주요 기능 설명
+![image](https://github.com/CSID-DGU/2024-1-OSSP2-team-12-HealthMate/assets/129031582/7a194bda-e893-4df4-80cb-ebce63489eb5)
 
 1. 국민보건공단에서 1차 건강검진표를 이미지로 사진찍어 올리면 이를 임시 배포환경에 저장.
 2. 저장된 이미지의 텍스트를 ClovaOCR을 통하여 추출.
